@@ -14,7 +14,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
         android:text="Contact Detail"
-        android:textColor="#673AB7"
         android:textSize="24dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/view_first_name"
@@ -33,7 +32,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="24dp"
         android:text="Phone Number:"
-        android:textColor="#2196F3"
+
         android:textSize="18sp"
         android:textStyle="bold|italic"
         app:layout_constraintBottom_toTopOf="@+id/label_email"
@@ -48,7 +47,7 @@
         android:layout_width="182dp"
         android:layout_height="54dp"
         android:layout_marginBottom="40dp"
-        android:textColor="#000000"
+
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/btn_back"
         app:layout_constraintEnd_toEndOf="parent"
@@ -60,7 +59,7 @@
         android:layout_width="182dp"
         android:layout_height="54dp"
         android:layout_marginBottom="28dp"
-        android:textColor="#000000"
+
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/view_email"
         app:layout_constraintEnd_toEndOf="parent"
@@ -76,7 +75,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="44dp"
         android:text="Email:"
-        android:textColor="#2196F3"
+
         android:textSize="18sp"
         android:textStyle="bold|italic"
         app:layout_constraintBottom_toTopOf="@+id/btn_back"
@@ -91,7 +90,6 @@
         android:layout_width="182dp"
         android:layout_height="54dp"
         android:layout_marginBottom="20dp"
-        android:textColor="#000000"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/view_phone"
         app:layout_constraintEnd_toEndOf="parent"
@@ -102,21 +100,22 @@
         android:id="@+id/btn_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Back"
-        app:iconTint="#FFFFFF"
+        android:text="Delete"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.557"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.683" />
+        app:layout_constraintVertical_bias="0.683"
+         />
 
     <TextView
         android:id="@+id/view_first_name"
         android:layout_width="182dp"
         android:layout_height="54dp"
         android:layout_marginBottom="28dp"
-        android:textColor="#000000"
+
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/view_last_name"
         app:layout_constraintEnd_toEndOf="parent"
@@ -132,7 +131,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="24dp"
         android:text="First Name:"
-        android:textColor="#2196F3"
+
         android:textSize="20sp"
         android:textStyle="bold|italic"
         app:layout_constraintBottom_toTopOf="@+id/label_lName"
@@ -151,7 +150,6 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="24dp"
         android:text="Last Name:"
-        android:textColor="#2196F3"
         android:textSize="20sp"
         android:textStyle="bold|italic"
         app:layout_constraintBottom_toTopOf="@+id/label_phone"

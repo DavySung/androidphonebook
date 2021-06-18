@@ -39,6 +39,7 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:hint="Phone"
+        android:maxLength="10"
         app:hintAnimationEnabled="true"
         app:layout_constraintBottom_toTopOf="@+id/edit_email"
         app:layout_constraintEnd_toEndOf="parent"

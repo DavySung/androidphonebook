@@ -1,5 +1,6 @@
 package com.example.ast2_phonebook.Activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.ast2_phonebook.PhoneBookDB.PhonebookDb;
@@ -16,7 +18,7 @@ import com.example.ast2_phonebook.Room.Entities.Phonebook;
 
 import java.util.ArrayList;
 
-public class DetailActivity extends AppCompatActivity  {
+public class DetailActivity extends AppCompatActivity {
 
     PhonebookDb db;
 
@@ -34,7 +36,7 @@ public class DetailActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        Button btnBack = findViewById(R.id.btn_back);
+        Button btnDelete = findViewById(R.id.btn_back);
 
         TextView txt_first_name = findViewById(R.id.view_first_name);
         TextView txt_last_name = findViewById(R.id.view_last_name);
@@ -42,7 +44,7 @@ public class DetailActivity extends AppCompatActivity  {
         TextView txt_email = findViewById(R.id.view_email);
 
         db = PhonebookDb.getDbInstance(this);
-
+        int id = getIntent().getExtras().getInt("id");
         String fName = getIntent().getExtras().getString("firstName");
         String lName = getIntent().getExtras().getString("lastName");
         String phoneNum = getIntent().getExtras().getString("phone");
@@ -53,11 +55,22 @@ public class DetailActivity extends AppCompatActivity  {
         txt_phone.setText(phoneNum);
         txt_email.setText(email);
 
-        btnBack.setOnClickListener(new View.OnClickListener(){
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-               onBackPressed();
+
+                TextView txtFirstName = findViewById(R.id.view_first_name);
+                TextView txtLastName = findViewById(R.id.view_last_name);
+                TextView txtPhone = findViewById(R.id.view_phone);
+                TextView txtEmail = findViewById(R.id.view_email);
+                db.phonebookDao().deletePhonebook(id);
+                Intent intent = new Intent(DetailActivity.this, ListPageActivity.class);
+                startActivityForResult(intent, ListPageActivity.Requestcode.VIEW_DETAIL_REQUEST_CODE.ordinal());
+
             }
         });
+
+
     }
 }

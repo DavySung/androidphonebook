@@ -18,13 +18,13 @@ public interface PhonebookDao {
     void insertPhonebook(Phonebook... phonebooks);
 
     //update
-   /* @Update
-    void updatePhonebook(Phonebook... phonebooks);*/
     @Query("UPDATE phonebook SET firstName= :firstName, lastName=:lastName, phone=:phone, email=:email WHERE id=:id")
     void updatePhonebook(int id, String firstName, String lastName, String phone, String email);
     //delete
-    @Delete
-    void deletePhonebook(Phonebook... phonebooks);
+    /*@Delete
+    void deletePhonebook(Phonebook... phonebooks);*/
+    @Query("Delete FROM phonebook WHERE id=:id")
+    void deletePhonebook(int id);
 
     //delete all
     @Query("DELETE FROM phonebook")

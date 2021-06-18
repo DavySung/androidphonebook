@@ -1,7 +1,10 @@
 package com.example.ast2_phonebook.Activities;
-import android.content.DialogInterface;
+
+import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,15 +13,18 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ast2_phonebook.Helper.MyButtonClickListener;
 import com.example.ast2_phonebook.Helper.MySwipeHelper;
+import com.example.ast2_phonebook.Helper.RemotePhonebookDB;
 import com.example.ast2_phonebook.Lib.MyHash;
+import com.example.ast2_phonebook.Model.PhonebookModel;
 import com.example.ast2_phonebook.PhoneBookDB.PhonebookDb;
 import com.example.ast2_phonebook.R;
 import com.example.ast2_phonebook.Room.Entities.Phonebook;
@@ -28,6 +34,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 
 public class ListPageActivity extends AppCompatActivity {
 
@@ -36,6 +48,7 @@ public class ListPageActivity extends AppCompatActivity {
         VIEW_DETAIL_REQUEST_CODE,
     }
     private final String TAG = this.getClass().getSimpleName();
+   //private final static String LOG_TAG = this.getClass().getSimpleName();
     private MyHashViewModel hash;
     // for sorting
     private FloatingActionButton btnSortA2Z;
@@ -46,8 +59,11 @@ public class ListPageActivity extends AppCompatActivity {
 
     private RecyclerView rv;
     private ListPageActivityAdapter clickAdapter;
-
-
+    CardView card;
+    ConstraintLayout dropButton;
+    int total, fail = 0;
+    boolean success = false;
+    private BroadcastReceiver MyReceiver = null;
     @Override
     public void onBackPressed() {
         // when click on the back button, return a message to parent activity
@@ -57,10 +73,12 @@ public class ListPageActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_page);
+
 
         db = PhonebookDb.getDbInstance(this);
 
@@ -121,27 +139,32 @@ public class ListPageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-                builder.setCancelable(true);
-                builder.setTitle("Delete");
-                builder.setMessage("Do you wish to delete this contact?");
-                builder.setPositiveButton("Yes",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+        // upload phonebook
 
-                            }
-                        });
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+          /*  for(Phonebook item :list)
+            {
+                PhonebookModel phone = new PhonebookModel();
+                phone.firstName = item.firstName;
+                phone.lastName = item.lastName;
+                phone.phone = item.phone;
+                phone.email = item.email;
+                Call<PhonebookModel> phonebookCreate = service.PhonebookCreate(phone);
+                //Call API
+                phonebookCreate.enqueue(new Callback<PhonebookModel>() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //finish();
-                        startActivity(getIntent());
+                    public void onResponse(Call<PhonebookModel> call, Response<PhonebookModel> response) {
+                        PhonebookModel phonebooks = response.body();
+                        Log.d(TAG, phonebooks.toString());
+                        return;
+                    }
+
+                    @Override
+                    public void onFailure(Call<PhonebookModel> call, Throwable t) {
+                        Log.d(TAG, "onFailure");
+                        return;
                     }
                 });
-
-                AlertDialog dialog = builder.create();
-                dialog.show();
+            }*/
 
             }
         });
@@ -149,18 +172,6 @@ public class ListPageActivity extends AppCompatActivity {
         MySwipeHelper swipeHelper = new MySwipeHelper(this, rv, 200) {
             @Override
             public void instantiateMyButton(RecyclerView.ViewHolder viewHolder, List<MySwipeHelper.MyButton> buffer) {
-             /*   buffer.add(new MyButton(ListPageActivity.this, "Delete",
-                        30,
-                        0,
-                        Color.parseColor("#FF3c30"),
-                        new MyButtonClickListener() {
-
-                            @Override
-                            public void onClick(int pos) {
-                                Toast.makeText(ListPageActivity.this, "Delete Click", Toast.LENGTH_SHORT).show();
-
-                            }
-                        }));*/
                 buffer.add(new MyButton(ListPageActivity.this, "Update",
                         30,
                         R.drawable.ic_edit_white_24,
@@ -183,6 +194,29 @@ public class ListPageActivity extends AppCompatActivity {
 
                             }
                         }));
+                buffer.add(new MyButton(ListPageActivity.this, "Call",
+                        30,
+                        R.drawable.ic_call_24,
+                        Color.parseColor("#98fb98"),
+                        new MyButtonClickListener() {
+
+                            @Override
+                            public void onClick(int pos) {
+                                Phonebook phoneList = list.get(pos);
+                                //Toast.makeText(ListPageActivity.this, "Delete Click", Toast.LENGTH_SHORT).show();
+                                if(phoneList.phone.isEmpty()){
+                                    Toast.makeText(ListPageActivity.this, "Enter PhoneNumber", Toast.LENGTH_SHORT).show();
+                                }
+                                else{
+                                    String s = phoneList.phone;
+                                    Toast.makeText(ListPageActivity.this, "Call Click", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", s, null));
+
+                                    startActivity(intent);
+                                }
+                            }
+                        }));
+
             }
 
             @Override
@@ -190,6 +224,8 @@ public class ListPageActivity extends AppCompatActivity {
                 return false;
             }
         };
+
+
         rv.setAdapter(clickAdapter);
         rv.setLayoutManager(new LinearLayoutManager(this));
 
@@ -202,8 +238,10 @@ public class ListPageActivity extends AppCompatActivity {
 
         // search
         searchSubmitClick();
-    }
 
+
+    }
+    
     // for search button
     private void searchSubmitClick() {
         btnSearchSubmit = findViewById(R.id.btn_search);
